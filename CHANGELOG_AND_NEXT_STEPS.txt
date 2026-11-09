@@ -1,0 +1,39 @@
+CrickVision updates in this package
+===================================
+
+Implemented in 05_app.py:
+1. Separate sidebar pages for Player Leaderboard, Player Search, Team Builder, and Win Prediction.
+2. Team Builder saves the two Playing XIs in the Streamlit session; Win Prediction uses those selections on its own page.
+3. Player Search includes death-over batting run rate in addition to runs and strike rate.
+4. Player Search replaces the old auction price band with a user-selected base price and a performance-based predicted sold-value prototype.
+5. Team Builder displays candidate player-fit scores and explanations based on squad role balance, impact, and death-over metrics.
+6. Preserves 1-based Playing XI numbering and player search/role filters.
+
+Updated in 03_player_analysis.py:
+- Adds death_over_run_rate to the generated player_scores.csv.
+- Analysis was run against the included deliveries_clean.csv and produced 732 player records.
+- Sample role checks: JJ Bumrah = Bowler; RG Sharma = Batsman; V Kohli = Batsman; RA Jadeja = All-Rounder; HH Pandya = All-Rounder.
+
+Model:
+- 04_train_win_model.py was run after regenerating player_scores.csv.
+- Current held-out test accuracy printed by the script: 0.606; precision 0.611; recall 0.622; F1 0.616.
+- These metrics are a simple holdout evaluation and should not be treated as proof of future accuracy.
+
+Important limitations:
+- The ZIP provided did not contain historical auction data. Therefore, Predicted Sold Value is a transparent heuristic prototype, not a trained auction-price ML model. The user selects an assumed/known base price.
+- Team Fit Scores are heuristic recommendation scores, not win probabilities or proven player-pair chemistry.
+- Roles are workload-based heuristics unless a verified player_roles.csv is provided. player_bio.csv in the supplied ZIP has bio/style columns but no official playing-role column.
+- Full browser/UI execution was not possible in the build environment because Streamlit is not installed there. Python syntax checks passed; run it in the user's environment after installing requirements.
+
+How to run on Windows:
+1. Extract this ZIP.
+2. Open CMD in the extracted CrickVision folder.
+3. py -m pip install -r requirements.txt
+4. py 03_player_analysis.py
+5. py 04_train_win_model.py
+6. py -m streamlit run 05_app.py
+
+If 'py' is not recognized, Python Launcher/Python PATH must be repaired first. Do not continue with pip or Streamlit commands until 'py --version' works.
+
+Auction data template:
+auction_history_template.csv has the expected columns. Fill it only with sourced auction records: player, season, base_price_cr, sold_price_cr, auction_status (e.g. Sold/Unsold), and team. A real training model should be implemented only after actual records are supplied and cleaned.
